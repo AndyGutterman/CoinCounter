@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class RowFunctions {
     public static void AddTitleRow(GridBagConstraints gbc, JPanel coinPanel){
-        JLabel coinName_title = new JLabel("Coin Name");
+        JLabel coinName_title = new JLabel("Type of Coin");
         JLabel coinQuantity_title = new JLabel("Quantity");
         JLabel coinValue_title = new JLabel("Value");
 

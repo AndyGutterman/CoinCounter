@@ -1,8 +1,10 @@
+package Currency;
+
 public class Coin {
     private String name; // Change from static to non-static
     private float value; // Change from static to non-static
     private int roll_limit;
-    public int roll_value; // Also, make this non-static
+    public float roll_value = value * roll_limit; // Also, make this non-static
 
     public Coin(String name, float val, int roll_limit) {
         this.name = name;
@@ -13,5 +15,9 @@ public class Coin {
 
     public String getName() {
         return name;
+    }
+
+    public float getValue() {
+        return value;
     }
 }
