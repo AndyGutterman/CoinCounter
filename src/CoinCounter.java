@@ -16,7 +16,7 @@ public class CoinCounter {
     private final ArrayList<JLabel> coinRowSleeves;
     private final ArrayList<JLabel> coinRowRemainders;
     private final JLabel coins_TotalValueLabel;
-    private float grandSum = 0;
+    private float grandTotal = 0;
     private int grandQuantity = 0;
 
     public CoinCounter() {
@@ -71,14 +71,16 @@ public class CoinCounter {
             JLabel coinNameLabel = new JLabel(coin.getName());
             JTextField coinTextField = new JTextField(5);
             JLabel coinRowValueLabel = new JLabel(" -.--" );
-            JLabel coinRowSleeveQTYLabel = new JLabel(" --");
-            JLabel coinRowRemainderQTYLabel = new JLabel(" -");
+            JLabel coinRowSleeveQTYLabel = new JLabel(" -- ");
+            JLabel coinRowRemainderQTYLabel = new JLabel(" --");
 
             coinNameLabel.setName(coin.getName());
             coinTextField.setName(coin.getName());
             coinRowValueLabel.setName(coin.getName());
+            coinRowValueLabel.setForeground(Color.GREEN.darker()); // Differentiate value per row
             coinRowSleeveQTYLabel.setName(coin.getName());
             coinRowRemainderQTYLabel.setName(coin.getName());
+
 
             gbc.gridx = 0; // first column
             gbc.gridy = row;
@@ -88,6 +90,7 @@ public class CoinCounter {
             gbc.gridy = row;
             coinPanel.add(coinTextField, gbc);
             coinTextFields.add(coinTextField);
+
 
             gbc.gridx = 2; // third column
             gbc.gridy = row;
@@ -130,7 +133,7 @@ public class CoinCounter {
         calculateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                grandSum = 0; // reset sum
+                grandTotal = 0; // reset sum
                 grandQuantity = 0; // Reset totalQuantity
                 for (int i = 0; i < CoinList.size(); i++) {
                     try {
@@ -139,25 +142,24 @@ public class CoinCounter {
                         int sleeves = (Integer.parseInt(coinTextFields.get(i).getText()) / CoinList.get(i).getRollLimit());   // calculate # of sleeves
                         int remainder_fromsleeves = (Integer.parseInt(coinTextFields.get(i).getText()) % CoinList.get(i).getRollLimit()); // calculate remainder
 
-                        //float row_rolls_value = sleeves * CoinList.get(i).getValue();
-
                         coinRowValues.get(i).setText(String.format("%.2f", value)); // Set values label at i's text to 'sleeves' value.
                         coinRowSleeves.get(i).setText(String.valueOf(sleeves)); // Set sleeves label at i's text to 'sleeves' value.
                         coinRowRemainders.get(i).setText(String.valueOf(remainder_fromsleeves));
-
                         grandQuantity += coinQuantity;           // Add to running QTY
-                        grandSum += value;                       //Add to running sum
+                        grandTotal += value;                       //Add to running sum
                     } catch (NumberFormatException ex) {
-                        coinRowValues.get(i).setText("Invalid Input");
+                        coinRowValues.get(i).setText("0");
                     }
                 }
-                coins_TotalValueLabel.setText(String.valueOf(grandSum));
+                coins_TotalValueLabel.setText(String.valueOf(grandTotal));
+                coins_TotalValueLabel.setForeground(Color.GREEN.darker());
+
                 coinTotalQuantity.setText(String.valueOf(grandQuantity));
             }
         });
 
         row++; // Add calculate button on final row
-        gbc.gridx = 2;
+        gbc.gridx = 0;
         gbc.gridy = row;
         gbc.gridwidth = 2;
         coinPanel.add(calculateButton, gbc);
