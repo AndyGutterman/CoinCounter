@@ -25,7 +25,6 @@ public class CoinCounter {
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainWindow.setSize(500, 350);
 
-
         ArrayList<Coin> CoinList = new ArrayList<>();
         Coin Quarter = new Coin("Quarter", 0.25F, 40);
         Coin Dime = new Coin("Dime", 0.10F, 50);
@@ -38,7 +37,6 @@ public class CoinCounter {
         CoinList.add(Nickel);
         CoinList.add(Penny);
 
-
         JPanel coinPanel = new JPanel(new GridBagLayout()); // Panel containing all per-row values and labels
 
         JPanel spacerPanel = new JPanel();
@@ -46,8 +44,6 @@ public class CoinCounter {
 
         JPanel rollSummaryPanel = new JPanel();
         rollSummaryPanel.setPreferredSize(new Dimension(400, 200));
-
-
 
         coinTextFields = new ArrayList<>();
 
@@ -65,13 +61,9 @@ public class CoinCounter {
         gbc.gridx = 0; // Set the column position
         gbc.gridy = 1; // Set the row position to place the spacerPanel below the coinPanel
 
-
         mainWindow.setLayout(new BoxLayout(mainWindow.getContentPane(), BoxLayout.Y_AXIS));
         mainWindow.add(coinPanel);
         mainWindow.add(spacerPanel);
-
-
-        //contentPanel.setLayout(new GridBagLayout()); // @ ChatGPT could you help me figure out how to make these go in ordder of apearance?
 
         int row = 1;
         RowFunctions.AddTitleRow(gbc, coinPanel);
@@ -107,8 +99,6 @@ public class CoinCounter {
             coinPanel.add(coinRowSleeveQTYLabel, gbc);
             coinRowSleeves.add(coinRowSleeveQTYLabel);
 
-
-
             gbc.gridx = 4; // column
             gbc.gridy = row;
             coinPanel.add(coinRowRemainderQTYLabel, gbc);
@@ -131,12 +121,10 @@ public class CoinCounter {
         gbc.gridy = row;
         coinPanel.add(coinTotalValueTitleLabel, gbc);
 
-
         coins_TotalValueLabel = new JLabel(" -- ");
         gbc.gridx = 3;
         gbc.gridy = row;
         coinPanel.add(coins_TotalValueLabel, gbc);
-
 
         JButton calculateButton = new JButton("Calculate"); // Create calculate button
         calculateButton.addActionListener(new ActionListener() {
@@ -168,16 +156,11 @@ public class CoinCounter {
             }
         });
 
-        // Add calculate button on final row
-        row++;
+        row++; // Add calculate button on final row
         gbc.gridx = 2;
         gbc.gridy = row;
         gbc.gridwidth = 2;
         coinPanel.add(calculateButton, gbc);
-
-        row++;
-        //mainWindow.add(SummaryPanelCreator.createSummaryRow(CoinList, coinTextFields, rollSummaryPanel, gbc, row)); // Create and add summary panel
-
     }
 
     public static void main(String[] args) {

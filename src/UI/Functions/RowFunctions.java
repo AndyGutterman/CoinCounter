@@ -27,23 +27,6 @@ public class RowFunctions {
             coinPanel.add(Legend.get(i), gbc);
             gbc.gridx++; // Move to the next column
         }
-
-
     }
-
-    public static void UpdateRowValue(ArrayList<Coin> CoinList, ArrayList<JTextField> coinTextFields, JLabel coinTotalValueLabel) {
-        float totalValue = 0.0f;
-        for (int i = 0; i < CoinList.size(); i++) {
-            try {
-                int coinQuantity = Integer.parseInt(coinTextFields.get(i).getText());
-                totalValue += CoinList.get(i).getValue() * coinQuantity;
-            } catch (NumberFormatException ex) {
-                // Handle invalid input if necessary
-            }
-        }
-        coinTotalValueLabel.setText(String.format("%.2f", totalValue));
-    }
-
-
  }
 
