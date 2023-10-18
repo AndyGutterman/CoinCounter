@@ -19,11 +19,13 @@ public class CoinCounter {
     private float grandTotal = 0;
     private int grandQuantity = 0;
 
+    private double grandRolledValue;
+
     public CoinCounter() {
         mainWindow = new JFrame("  Coin Counter");
         mainWindow.setIconImage(new ImageIcon(Objects.requireNonNull(CoinCounter.class.getResource("/Icons/coin.png"))).getImage());
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainWindow.setSize(500, 350);
+        mainWindow.setSize(500, 325);
 
         ArrayList<Coin> CoinList = new ArrayList<>();
         Coin Quarter = new Coin("Quarter", 0.25F, 40);
@@ -39,11 +41,6 @@ public class CoinCounter {
 
         JPanel coinPanel = new JPanel(new GridBagLayout()); // Panel containing all per-row values and labels
 
-        JPanel spacerPanel = new JPanel();
-        spacerPanel.setPreferredSize(new Dimension(400, 250)); // Panel to act as spacer
-
-        JPanel rollSummaryPanel = new JPanel();
-        rollSummaryPanel.setPreferredSize(new Dimension(400, 200));
 
         coinTextFields = new ArrayList<>();
 
@@ -57,13 +54,13 @@ public class CoinCounter {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
         coinPanel.setLayout(new GridBagLayout());
-
+        mainWindow.add(coinPanel);
         gbc.gridx = 0; // Set the column position
         gbc.gridy = 1; // Set the row position to place the spacerPanel below the coinPanel
 
         mainWindow.setLayout(new BoxLayout(mainWindow.getContentPane(), BoxLayout.Y_AXIS));
-        mainWindow.add(coinPanel);
-        mainWindow.add(spacerPanel);
+
+
 
         int row = 1;
         RowFunctions.AddTitleRow(gbc, coinPanel);
@@ -109,7 +106,7 @@ public class CoinCounter {
             row++;
         }
 
-        JLabel coinTotalQuantityTitleLabel = new JLabel("Number of coins:");
+        JLabel coinTotalQuantityTitleLabel = new JLabel("Grand Totals:");
         gbc.gridx = 0;
         gbc.gridy = row;
         coinPanel.add(coinTotalQuantityTitleLabel, gbc);
@@ -119,13 +116,8 @@ public class CoinCounter {
         gbc.gridy = row;
         coinPanel.add(coinTotalQuantity, gbc);
 
-        JLabel coinTotalValueTitleLabel = new JLabel("Grand Total:  $");
-        gbc.gridx = 2;
-        gbc.gridy = row;
-        coinPanel.add(coinTotalValueTitleLabel, gbc);
-
         coins_TotalValueLabel = new JLabel(" -- ");
-        gbc.gridx = 3;
+        gbc.gridx = 2;
         gbc.gridy = row;
         coinPanel.add(coins_TotalValueLabel, gbc);
 
@@ -135,35 +127,52 @@ public class CoinCounter {
             public void actionPerformed(ActionEvent e) {
                 grandTotal = 0; // reset sum
                 grandQuantity = 0; // Reset totalQuantity
+                grandRolledValue= 0;
                 for (int i = 0; i < CoinList.size(); i++) {
                     try {
                         int coinQuantity = Integer.parseInt(coinTextFields.get(i).getText());
-                        float value = CoinList.get(i).getValue() * coinQuantity;        //
-                        int sleeves = (Integer.parseInt(coinTextFields.get(i).getText()) / CoinList.get(i).getRollLimit());   // calculate # of sleeves
-                        int remainder_fromsleeves = (Integer.parseInt(coinTextFields.get(i).getText()) % CoinList.get(i).getRollLimit()); // calculate remainder
+                        float value = CoinList.get(i).getValue() * coinQuantity;
+                        int sleeves = coinQuantity / CoinList.get(i).getRollLimit();
+                        int remainder_fromsleeves = coinQuantity % CoinList.get(i).getRollLimit();
 
-                        coinRowValues.get(i).setText(String.format("%.2f", value)); // Set values label at i's text to 'sleeves' value.
-                        coinRowSleeves.get(i).setText(String.valueOf(sleeves)); // Set sleeves label at i's text to 'sleeves' value.
+                        coinRowValues.get(i).setText(String.format("%.2f", value));
+
+                        if (sleeves >= 1) {
+                            int rowRolledValue = (int) CoinList.get(i).getRollValue(sleeves);
+                            grandRolledValue += rowRolledValue;
+                            coinRowSleeves.get(i).setText(String.valueOf(sleeves) + " [$" + rowRolledValue + "]");
+                            grandRolledValue += rowRolledValue; // Update value for rolled monies
+                        } else {
+                            coinRowSleeves.get(i).setText(String.valueOf(sleeves));
+                        }
+
                         coinRowRemainders.get(i).setText(String.valueOf(remainder_fromsleeves));
-                        grandQuantity += coinQuantity;           // Add to running QTY
-                        grandTotal += value;                       //Add to running sum
+                        grandQuantity += coinQuantity;
+                        grandTotal += value;
                     } catch (NumberFormatException ex) {
                         coinRowValues.get(i).setText("0");
                     }
                 }
-                coins_TotalValueLabel.setText(String.valueOf(grandTotal));
-                coins_TotalValueLabel.setForeground(Color.GREEN.darker());
-
+                coins_TotalValueLabel.setText(" $" + String.format("%.2f", grandTotal));
                 coinTotalQuantity.setText(String.valueOf(grandQuantity));
+                coins_TotalValueLabel.setForeground(Color.GREEN.darker());
             }
         });
 
-        row++; // Add calculate button on final row
+        row++; // Add calculate button
         gbc.gridx = 0;
         gbc.gridy = row;
         gbc.gridwidth = 2;
         coinPanel.add(calculateButton, gbc);
+
     }
+
+
+        //row++;
+//        gbc.gridx = 0; Next will be the total sleeves needed and value
+//        gbc.gridy = row;
+//        gbc.gridwidth = 2;
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
