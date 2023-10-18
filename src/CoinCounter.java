@@ -1,5 +1,4 @@
 import Currency.*;
-
 import UI.Functions.RowFunctions;
 
 import java.awt.*;
@@ -16,15 +15,11 @@ public class CoinCounter {
     private final ArrayList<JLabel> coinRowSleeves;
     private final ArrayList<JLabel> coinRowRemainders;
     private final JLabel coins_TotalValueLabel;
-
     private final JLabel GrandSleeveValue;
-
     private final JLabel GrandRemainderValue;
     private float grandTotal = 0;
     private int grandQuantity = 0;
-
     private float grandRemainder;
-
     private double grandRolledValue;
 
     public CoinCounter() {
@@ -47,13 +42,9 @@ public class CoinCounter {
 
         JPanel coinPanel = new JPanel(new GridBagLayout()); // Panel containing all per-row values and labels
 
-
         coinTextFields = new ArrayList<>();
-
         coinRowValues = new ArrayList<>();
-
         coinRowSleeves = new ArrayList<>();
-
         coinRowRemainders = new ArrayList<>();
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -65,8 +56,6 @@ public class CoinCounter {
         gbc.gridy = 1; // Set the row position to place the spacerPanel below the coinPanel
 
         mainWindow.setLayout(new BoxLayout(mainWindow.getContentPane(), BoxLayout.Y_AXIS));
-
-
 
         int row = 1;
         RowFunctions.AddTitleRow(gbc, coinPanel);
@@ -83,7 +72,6 @@ public class CoinCounter {
             coinRowValueLabel.setForeground(Color.GREEN.darker()); // Differentiate value per row
             coinRowSleeveQTYLabel.setName(coin.getName());
             coinRowRemainderQTYLabel.setName(coin.getName());
-
 
             gbc.gridx = 0; // first column
             gbc.gridy = row;
@@ -137,7 +125,6 @@ public class CoinCounter {
         gbc.gridy = row;
         coinPanel.add(GrandRemainderValue, gbc);
 
-
         JButton calculateButton = new JButton("Calculate"); // Create calculate button
         calculateButton.addActionListener(new ActionListener() {
             @Override
@@ -188,13 +175,6 @@ public class CoinCounter {
         coinPanel.add(calculateButton, gbc);
 
     }
-
-
-        //row++;
-//        gbc.gridx = 0; Next will be the total sleeves needed and value
-//        gbc.gridy = row;
-//        gbc.gridwidth = 2;
-
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {

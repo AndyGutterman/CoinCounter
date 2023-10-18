@@ -1,7 +1,4 @@
 package UI.Functions;
-
-import Currency.Coin;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
