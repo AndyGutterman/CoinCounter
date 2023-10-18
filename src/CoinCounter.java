@@ -4,26 +4,26 @@ import UI.Functions.RowFunctions;
 
 import java.awt.*;
 import javax.swing.*;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class CoinCounter {
-    private JFrame mainWindow;
-    private ArrayList<JTextField> coinTextFields;
-    private ArrayList<JLabel> coinRowValues;
-    private JLabel coinTotalValueLabel;
-    private float sum = 0;
-    private int totalQuantity = 0;
+    private final JFrame mainWindow;
+    private final ArrayList<JTextField> coinTextFields;
+    private final ArrayList<JLabel> coinRowValues;
+    private final ArrayList<JLabel> coinRowSleeves;
+    private final ArrayList<JLabel> coinRowRemainders;
+    private final JLabel coins_TotalValueLabel;
+    private float grandSum = 0;
+    private int grandQuantity = 0;
 
     public CoinCounter() {
         mainWindow = new JFrame("  Coin Counter");
         mainWindow.setIconImage(new ImageIcon(Objects.requireNonNull(CoinCounter.class.getResource("/Icons/coin.png"))).getImage());
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainWindow.setSize(400, 315);
+        mainWindow.setSize(500, 350);
 
 
         ArrayList<Coin> CoinList = new ArrayList<>();
@@ -31,6 +31,7 @@ public class CoinCounter {
         Coin Dime = new Coin("Dime", 0.10F, 50);
         Coin Nickel = new Coin("Nickel", 0.05F, 40);
         Coin Penny = new Coin("Penny", .01F, 50);
+        Penny.updatePlural("Pennies");
 
         CoinList.add(Quarter);
         CoinList.add(Dime);
@@ -38,31 +39,57 @@ public class CoinCounter {
         CoinList.add(Penny);
 
 
-        JPanel coinPanel = new JPanel(new GridBagLayout());
-        mainWindow.add(coinPanel);
+        JPanel coinPanel = new JPanel(new GridBagLayout()); // Panel containing all per-row values and labels
+
+        JPanel spacerPanel = new JPanel();
+        spacerPanel.setPreferredSize(new Dimension(400, 250)); // Panel to act as spacer
+
+        JPanel rollSummaryPanel = new JPanel();
+        rollSummaryPanel.setPreferredSize(new Dimension(400, 200));
+
+
 
         coinTextFields = new ArrayList<>();
+
         coinRowValues = new ArrayList<>();
+
+        coinRowSleeves = new ArrayList<>();
+
+        coinRowRemainders = new ArrayList<>();
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(5, 5, 5, 5);
         coinPanel.setLayout(new GridBagLayout());
 
+        gbc.gridx = 0; // Set the column position
+        gbc.gridy = 1; // Set the row position to place the spacerPanel below the coinPanel
+
+
+        mainWindow.setLayout(new BoxLayout(mainWindow.getContentPane(), BoxLayout.Y_AXIS));
+        mainWindow.add(coinPanel);
+        mainWindow.add(spacerPanel);
+
+
+        //contentPanel.setLayout(new GridBagLayout()); // @ ChatGPT could you help me figure out how to make these go in ordder of apearance?
+
         int row = 1;
         RowFunctions.AddTitleRow(gbc, coinPanel);
         for (Coin coin : CoinList) {
-            JLabel coinNameLabel = new JLabel(coin.getName() + "s:");
+            JLabel coinNameLabel = new JLabel(coin.getName());
             JTextField coinTextField = new JTextField(5);
-            JLabel coinRowValue = new JLabel("--");
+            JLabel coinRowValueLabel = new JLabel(" -.--" );
+            JLabel coinRowSleeveQTYLabel = new JLabel(" --");
+            JLabel coinRowRemainderQTYLabel = new JLabel(" -");
 
             coinNameLabel.setName(coin.getName());
             coinTextField.setName(coin.getName());
-            coinRowValue.setName(coin.getName());
+            coinRowValueLabel.setName(coin.getName());
+            coinRowSleeveQTYLabel.setName(coin.getName());
+            coinRowRemainderQTYLabel.setName(coin.getName());
 
             gbc.gridx = 0; // first column
             gbc.gridy = row;
-
             coinPanel.add(coinNameLabel, gbc);
 
             gbc.gridx = 1; // second column
@@ -72,23 +99,20 @@ public class CoinCounter {
 
             gbc.gridx = 2; // third column
             gbc.gridy = row;
-            coinPanel.add(coinRowValue, gbc);
-            coinRowValues.add(coinRowValue);
+            coinPanel.add(coinRowValueLabel, gbc);
+            coinRowValues.add(coinRowValueLabel);
 
-            /*
-            JLabel Sleeves = new JLabel("S");
-            Sleeves.setName(coin.getName()+"sleeves");
-            gbc.gridx = 3; // fourth column
+            gbc.gridx = 3; //  column
             gbc.gridy = row;
-            coinPanel.add(Sleeves, gbc);
-            coinRowValues.add(coinRowValue);
+            coinPanel.add(coinRowSleeveQTYLabel, gbc);
+            coinRowSleeves.add(coinRowSleeveQTYLabel);
 
-            JLabel remainder = new JLabel("R");
-            remainder.setName(coin.getName()+"Remainder");
-            gbc.gridx = 4; // fifth column
+
+
+            gbc.gridx = 4; // column
             gbc.gridy = row;
-            coinPanel.add(remainder, gbc);
-            coinRowValues.add(coinRowValue);*/
+            coinPanel.add(coinRowRemainderQTYLabel, gbc);
+            coinRowRemainders.add(coinRowRemainderQTYLabel);
             row++;
         }
 
@@ -102,40 +126,45 @@ public class CoinCounter {
         gbc.gridy = row;
         coinPanel.add(coinTotalQuantity, gbc);
 
-        JLabel coinTotalValueTitleLabel = new JLabel("Total:  $");
+        JLabel coinTotalValueTitleLabel = new JLabel("Grand Total:  $");
         gbc.gridx = 2;
         gbc.gridy = row;
         coinPanel.add(coinTotalValueTitleLabel, gbc);
 
 
-        coinTotalValueLabel = new JLabel(" -- ");
+        coins_TotalValueLabel = new JLabel(" -- ");
         gbc.gridx = 3;
         gbc.gridy = row;
-        coinPanel.add(coinTotalValueLabel, gbc);
+        coinPanel.add(coins_TotalValueLabel, gbc);
+
 
         JButton calculateButton = new JButton("Calculate"); // Create calculate button
         calculateButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                sum = 0; // reset sum
-                totalQuantity = 0; // Reset totalQuantity
+                grandSum = 0; // reset sum
+                grandQuantity = 0; // Reset totalQuantity
                 for (int i = 0; i < CoinList.size(); i++) {
                     try {
                         int coinQuantity = Integer.parseInt(coinTextFields.get(i).getText());
-                        float coinValue = CoinList.get(i).getValue() * coinQuantity;
-                        coinRowValues.get(i).setText(String.format("%.2f", coinValue));
-                        totalQuantity += coinQuantity; // Update total quantity
-                        sum += coinValue; // Add the coin value to the sum
-                        //int rollLimit = CoinList.get(i).getRollLimit();
+                        float value = CoinList.get(i).getValue() * coinQuantity;        //
+                        int sleeves = (Integer.parseInt(coinTextFields.get(i).getText()) / CoinList.get(i).getRollLimit());   // calculate # of sleeves
+                        int remainder_fromsleeves = (Integer.parseInt(coinTextFields.get(i).getText()) % CoinList.get(i).getRollLimit()); // calculate remainder
+
+                        //float row_rolls_value = sleeves * CoinList.get(i).getValue();
+
+                        coinRowValues.get(i).setText(String.format("%.2f", value)); // Set values label at i's text to 'sleeves' value.
+                        coinRowSleeves.get(i).setText(String.valueOf(sleeves)); // Set sleeves label at i's text to 'sleeves' value.
+                        coinRowRemainders.get(i).setText(String.valueOf(remainder_fromsleeves));
+
+                        grandQuantity += coinQuantity;           // Add to running QTY
+                        grandSum += value;                       //Add to running sum
                     } catch (NumberFormatException ex) {
                         coinRowValues.get(i).setText("Invalid Input");
                     }
                 }
-
-
-                // Update the total value label
-                RowFunctions.UpdateRowValue(CoinList, coinTextFields, coinTotalValueLabel);
-                coinTotalQuantity.setText(String.valueOf(totalQuantity));
+                coins_TotalValueLabel.setText(String.valueOf(grandSum));
+                coinTotalQuantity.setText(String.valueOf(grandQuantity));
             }
         });
 
@@ -145,6 +174,9 @@ public class CoinCounter {
         gbc.gridy = row;
         gbc.gridwidth = 2;
         coinPanel.add(calculateButton, gbc);
+
+        row++;
+        //mainWindow.add(SummaryPanelCreator.createSummaryRow(CoinList, coinTextFields, rollSummaryPanel, gbc, row)); // Create and add summary panel
 
     }
 
