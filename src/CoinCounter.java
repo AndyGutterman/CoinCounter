@@ -75,6 +75,20 @@ public class CoinCounter {
             coinPanel.add(coinRowValue, gbc);
             coinRowValues.add(coinRowValue);
 
+            /*
+            JLabel Sleeves = new JLabel("S");
+            Sleeves.setName(coin.getName()+"sleeves");
+            gbc.gridx = 3; // fourth column
+            gbc.gridy = row;
+            coinPanel.add(Sleeves, gbc);
+            coinRowValues.add(coinRowValue);
+
+            JLabel remainder = new JLabel("R");
+            remainder.setName(coin.getName()+"Remainder");
+            gbc.gridx = 4; // fifth column
+            gbc.gridy = row;
+            coinPanel.add(remainder, gbc);
+            coinRowValues.add(coinRowValue);*/
             row++;
         }
 
@@ -99,8 +113,6 @@ public class CoinCounter {
         gbc.gridy = row;
         coinPanel.add(coinTotalValueLabel, gbc);
 
-
-
         JButton calculateButton = new JButton("Calculate"); // Create calculate button
         calculateButton.addActionListener(new ActionListener() {
             @Override
@@ -114,10 +126,12 @@ public class CoinCounter {
                         coinRowValues.get(i).setText(String.format("%.2f", coinValue));
                         totalQuantity += coinQuantity; // Update total quantity
                         sum += coinValue; // Add the coin value to the sum
+                        //int rollLimit = CoinList.get(i).getRollLimit();
                     } catch (NumberFormatException ex) {
                         coinRowValues.get(i).setText("Invalid Input");
                     }
                 }
+
 
                 // Update the total value label
                 RowFunctions.UpdateRowValue(CoinList, coinTextFields, coinTotalValueLabel);

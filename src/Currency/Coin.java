@@ -20,4 +20,8 @@ public class Coin {
     public float getValue() {
         return value;
     }
+
+    public int getRollLimit() {
+        return roll_limit;
+    }
 }

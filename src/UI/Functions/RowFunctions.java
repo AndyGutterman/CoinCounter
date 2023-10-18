@@ -28,11 +28,11 @@ public class RowFunctions {
         gbc.gridx = 2; // third column
         gbc.gridy = 0;
         coinPanel.add(coinValue_title, gbc);
+
     }
 
     public static void UpdateRowValue(ArrayList<Coin> CoinList, ArrayList<JTextField> coinTextFields, JLabel coinTotalValueLabel) {
         float totalValue = 0.0f;
-
         for (int i = 0; i < CoinList.size(); i++) {
             try {
                 int coinQuantity = Integer.parseInt(coinTextFields.get(i).getText());
@@ -41,7 +41,6 @@ public class RowFunctions {
                 // Handle invalid input if necessary
             }
         }
-
         coinTotalValueLabel.setText(String.format("%.2f", totalValue));
     }
 
