@@ -16,8 +16,14 @@ public class CoinCounter {
     private final ArrayList<JLabel> coinRowSleeves;
     private final ArrayList<JLabel> coinRowRemainders;
     private final JLabel coins_TotalValueLabel;
+
+    private final JLabel GrandSleeveValue;
+
+    private final JLabel GrandRemainderValue;
     private float grandTotal = 0;
     private int grandQuantity = 0;
+
+    private float grandRemainder;
 
     private double grandRolledValue;
 
@@ -121,6 +127,17 @@ public class CoinCounter {
         gbc.gridy = row;
         coinPanel.add(coins_TotalValueLabel, gbc);
 
+        GrandSleeveValue = new JLabel(" -- ");
+        gbc.gridx = 3;
+        gbc.gridy = row;
+        coinPanel.add(GrandSleeveValue, gbc);
+
+        GrandRemainderValue = new JLabel(" -- ");
+        gbc.gridx = 4;
+        gbc.gridy = row;
+        coinPanel.add(GrandRemainderValue, gbc);
+
+
         JButton calculateButton = new JButton("Calculate"); // Create calculate button
         calculateButton.addActionListener(new ActionListener() {
             @Override
@@ -128,6 +145,7 @@ public class CoinCounter {
                 grandTotal = 0; // reset sum
                 grandQuantity = 0; // Reset totalQuantity
                 grandRolledValue= 0;
+                grandRemainder = 0;
                 for (int i = 0; i < CoinList.size(); i++) {
                     try {
                         int coinQuantity = Integer.parseInt(coinTextFields.get(i).getText());
@@ -137,13 +155,15 @@ public class CoinCounter {
 
                         coinRowValues.get(i).setText(String.format("%.2f", value));
 
+
                         if (sleeves >= 1) {
                             int rowRolledValue = (int) CoinList.get(i).getRollValue(sleeves);
-                            grandRolledValue += rowRolledValue;
                             coinRowSleeves.get(i).setText(String.valueOf(sleeves) + " [$" + rowRolledValue + "]");
                             grandRolledValue += rowRolledValue; // Update value for rolled monies
+                            grandRemainder += remainder_fromsleeves * CoinList.get(i).getValue();
                         } else {
                             coinRowSleeves.get(i).setText(String.valueOf(sleeves));
+                            grandRemainder += remainder_fromsleeves * CoinList.get(i).getValue();
                         }
 
                         coinRowRemainders.get(i).setText(String.valueOf(remainder_fromsleeves));
@@ -153,7 +173,9 @@ public class CoinCounter {
                         coinRowValues.get(i).setText("0");
                     }
                 }
-                coins_TotalValueLabel.setText(" $" + String.format("%.2f", grandTotal));
+                GrandSleeveValue.setText("  [$" + grandRolledValue + "]");
+                GrandRemainderValue.setText("$" + grandRemainder);
+                coins_TotalValueLabel.setText(" $" + String.valueOf(grandTotal));
                 coinTotalQuantity.setText(String.valueOf(grandQuantity));
                 coins_TotalValueLabel.setForeground(Color.GREEN.darker());
             }
