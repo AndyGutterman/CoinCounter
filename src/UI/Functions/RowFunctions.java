@@ -20,8 +20,8 @@ public class RowFunctions {
 
         gbc.gridx = 0; // first column
         gbc.gridy = 0;
-        for (int i = 0; i < Legend.size(); i++) {
-            coinPanel.add(Legend.get(i), gbc);
+        for (JLabel jLabel : Legend) {
+            coinPanel.add(jLabel, gbc);
             gbc.gridx++; // Move to the next column
         }
     }
