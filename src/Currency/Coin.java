@@ -11,7 +11,7 @@ public class Coin {
         this.name = name;
         this.value = val;
         this.roll_limit = roll_limit;
-        this.roll_value = val * roll_limit;
+        this.roll_value = (float)(val * roll_limit);
     }
 
     public String getName() {

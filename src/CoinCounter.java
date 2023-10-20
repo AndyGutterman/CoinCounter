@@ -20,7 +20,7 @@ public class CoinCounter {
     private float grandTotal = 0;
     private int grandQuantity = 0;
     private float grandRemainder;
-    private double grandRolledValue;
+    private float grandRolledValue;
 
     public CoinCounter() {
         mainWindow = new JFrame("  Coin Counter");
@@ -144,7 +144,7 @@ public class CoinCounter {
 
 
                         if (sleeves >= 1) {
-                            int rowRolledValue = (int) CoinList.get(i).getRollValue(sleeves);
+                            float rowRolledValue = CoinList.get(i).getRollValue(sleeves);
                             coinRowSleeves.get(i).setText(String.valueOf(sleeves) + " [$" + rowRolledValue + "]");
                             grandRolledValue += rowRolledValue; // Update value for rolled monies
                             grandRemainder += remainder_fromsleeves * CoinList.get(i).getValue();
@@ -160,9 +160,9 @@ public class CoinCounter {
                         coinRowValues.get(i).setText("0");
                     }
                 }
-                GrandSleeveValue.setText("  [$" + grandRolledValue + "]");
-                GrandRemainderValue.setText("$" + grandRemainder);
-                coins_TotalValueLabel.setText(" $" + String.valueOf(grandTotal));
+                GrandSleeveValue.setText("  [$" + String.format("%.2f", grandRolledValue) + "]");
+                GrandRemainderValue.setText("$" + String.format("%.2f", grandRemainder));
+                coins_TotalValueLabel.setText(" $" + String.format("%.2f", grandTotal));
                 coinTotalQuantity.setText(String.valueOf(grandQuantity));
                 coins_TotalValueLabel.setForeground(Color.GREEN.darker());
             }
