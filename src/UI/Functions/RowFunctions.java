@@ -12,13 +12,13 @@ public class RowFunctions {
         JLabel coinValue_title = new JLabel("Remaining Coins:");
 
         ArrayList<JLabel> Legend = new ArrayList<>();
-        Legend.add(coinName_title);
-        Legend.add(coinRollQTY);
-        Legend.add(coinRemainderQTY);
-        Legend.add(coinQuantity_title);
-        Legend.add(coinValue_title);
+         Legend.add(coinName_title);
+         Legend.add(coinRollQTY);
+         Legend.add(coinRemainderQTY);
+         Legend.add(coinQuantity_title);
+         Legend.add(coinValue_title);
 
-        gbc.gridx = 0; // first column
+        gbc.gridx = 0;
         gbc.gridy = 0;
         for (JLabel jLabel : Legend) {
             coinPanel.add(jLabel, gbc);
