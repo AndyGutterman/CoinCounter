@@ -46,7 +46,7 @@ public class CoinCounter {
         coinPanel.setLayout(new GridBagLayout());
         mainWindow.add(coinPanel);
         gbc.gridx = 0; // Set the column position
-        gbc.gridy = 1; // Set the row position to place the spacerPanel below the coinPanel
+        gbc.gridy = 1; // Set the row position
 
         mainWindow.setLayout(new BoxLayout(mainWindow.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -74,16 +74,15 @@ public class CoinCounter {
             coinPanel.add(coinTextField, gbc);
             coinTextFields.add(coinTextField);
 
-
             gbc.gridx = 2; // third column
             coinPanel.add(coinRowValueLabel, gbc);
             coinRowValues.add(coinRowValueLabel);
 
-            gbc.gridx = 3; //  column
+            gbc.gridx = 3; // fourth column
             coinPanel.add(coinRowSleeveQTYLabel, gbc);
             coinRowSleeves.add(coinRowSleeveQTYLabel);
 
-            gbc.gridx = 4; // column
+            gbc.gridx = 4; // fifth column
             coinPanel.add(coinRowRemainderQTYLabel, gbc);
             coinRowRemainders.add(coinRowRemainderQTYLabel);
             row++;
@@ -110,34 +109,31 @@ public class CoinCounter {
         gbc.gridx = 4;
         coinPanel.add(GrandRemainderValue, gbc);
 
-        JButton calculateButton = getCalculateButton(CoinList, coinTotalQuantity);
+        JButton calculateButton = getCalculateButton(CoinList, coinTotalQuantity); // Add calculate button
 
-        row++; // Add calculate button
+        row++;
         gbc.gridx = 0;
         gbc.gridy = row;
         gbc.gridwidth = 2;
         coinPanel.add(calculateButton, gbc);
-
     }
 
     private JButton getCalculateButton(ArrayList<Coin> CoinList, JLabel coinTotalQuantity) {
         JButton calculateButton = new JButton("Calculate"); // Create calculate button
-        calculateButton.addActionListener(e -> {
-            grandTotal = 0; // reset sum
-            grandQuantity = 0; // Reset totalQuantity
-            grandRolledValue= 0;
-            grandRemainder = 0;
-            for (int i = 0; i < CoinList.size(); i++) {
-                try {
+        calculateButton.addActionListener(e -> { // Upon each press of the button:
+            grandTotal = 0;      // Reset variables
+            grandQuantity = 0;   //
+            grandRolledValue= 0; //
+            grandRemainder = 0;  //
+            for (int i = 0; i < CoinList.size(); i++) { // Row values
+                try { // Calculate values
                     int coinQuantity = Integer.parseInt(coinTextFields.get(i).getText());
                     float value = CoinList.get(i).getValue() * coinQuantity;
                     int sleeves = coinQuantity / CoinList.get(i).getRollLimit();
                     int remainderFromSleeves = coinQuantity % CoinList.get(i).getRollLimit();
-
                     coinRowValues.get(i).setText(String.format("%.2f", value));
 
-
-                    if (sleeves >= 1) {
+                    if (sleeves >= 1) { // If there are enough coins for this coin for a full roll:
                         float rowRolledValue = CoinList.get(i).getRollValue(sleeves);
                         coinRowSleeves.get(i).setText(sleeves + " [$" + rowRolledValue + "]");
                         grandRolledValue += rowRolledValue; // Update value for rolled monies
@@ -152,11 +148,12 @@ public class CoinCounter {
                     coinRowValues.get(i).setText("0");
                 }
             }
+            coinTotalQuantity.setText(String.valueOf(grandQuantity)); // Grand column values
+            coins_TotalValueLabel.setText(" $" + String.format("%.2f", grandTotal));
+            coins_TotalValueLabel.setForeground(Color.GREEN.darker());
             GrandSleeveValue.setText("  [$" + String.format("%.2f", grandRolledValue) + "]");
             GrandRemainderValue.setText("$" + String.format("%.2f", grandRemainder));
-            coins_TotalValueLabel.setText(" $" + String.format("%.2f", grandTotal));
-            coinTotalQuantity.setText(String.valueOf(grandQuantity));
-            coins_TotalValueLabel.setForeground(Color.GREEN.darker());
+
         });
         return calculateButton;
     }
