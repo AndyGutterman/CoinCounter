@@ -3,10 +3,10 @@ package Currency;
 import java.util.ArrayList;
 
 public class Coin {
-    private final String name; // Change from static to non-static
-    private final float value; // Change from static to non-static
+    private final String name;
+    private final float value;
     private final int roll_limit;
-    public float roll_value; // Also, make this non-static
+    public float roll_value;
     private String plural;
 
     public Coin(String name, float val, int roll_limit, ArrayList<Coin> CoinList) {
@@ -24,6 +24,9 @@ public class Coin {
         return name +"s" + " [" + roll_limit + " per roll]:";
     }
 
+    public void updatePlural(String plural) {
+        this.plural = plural;
+    }
     public float getValue() {
         return value;
     }
@@ -32,11 +35,8 @@ public class Coin {
         return roll_limit;
     }
 
-    public void updatePlural(String plural) {
-        this.plural = plural;
-    }
-
     public float getRollValue(int qty) {
         return roll_value * qty;
     }
+
 }
