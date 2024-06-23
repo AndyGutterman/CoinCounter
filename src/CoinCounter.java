@@ -1,8 +1,8 @@
-import Currency.*;
+import Currency.Coin;
 import UI.Functions.RowFunctions;
 
-import java.awt.*;
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -20,20 +20,13 @@ public class CoinCounter {
     private float grandRemainder;
     private float grandRolledValue;
 
-    public CoinCounter() {
-        mainWindow = new JFrame("  Coin Counter");
+    public CoinCounter(ArrayList<Coin> CoinList) {
+        mainWindow = new JFrame("Coin Counter");
         mainWindow.setIconImage(new ImageIcon(Objects.requireNonNull(CoinCounter.class.getResource("/Icons/coin.png"))).getImage());
         mainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainWindow.setSize(500, 325);
+        mainWindow.setMinimumSize(new Dimension(1100, 650));
 
-        ArrayList<Coin> CoinList = new ArrayList<>();
-        Coin Quarter = new Coin("Quarter", 0.25F, 40, CoinList);
-        Coin Dime = new Coin("Dime", 0.10F, 50, CoinList);
-        Coin Nickel = new Coin("Nickel", 0.05F, 40, CoinList);
-        Coin Penny = new Coin("Penny", .01F, 50, CoinList);
-        Penny.updatePlural("Pennies");
-
-        JPanel coinPanel = new JPanel(new GridBagLayout()); // Panel containing all per-row values and labels
+        JPanel coinPanel = new JPanel(new GridBagLayout());
 
         coinTextFields = new ArrayList<>();
         coinRowValues = new ArrayList<>();
@@ -42,11 +35,11 @@ public class CoinCounter {
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(10, 10, 10, 10);
         coinPanel.setLayout(new GridBagLayout());
         mainWindow.add(coinPanel);
-        gbc.gridx = 0; // Set the column position
-        gbc.gridy = 1; // Set the row position
+        gbc.gridx = 0;
+        gbc.gridy = 1;
 
         mainWindow.setLayout(new BoxLayout(mainWindow.getContentPane(), BoxLayout.Y_AXIS));
 
@@ -54,62 +47,71 @@ public class CoinCounter {
         RowFunctions.AddTitleRow(gbc, coinPanel);
         for (Coin coin : CoinList) {
             JLabel coinNameLabel = new JLabel(coin.getName());
-            JTextField coinTextField = new JTextField(5);
-            JLabel coinRowValueLabel = new JLabel(" -.--" );
+            coinNameLabel.setFont(new Font("Arial", Font.BOLD, 18));
+
+            JTextField coinTextField = new JTextField(8);
+            coinTextField.setFont(new Font("Arial", Font.PLAIN, 18));
+
+            JLabel coinRowValueLabel = new JLabel(" -.--");
+            coinRowValueLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+            coinRowValueLabel.setForeground(Color.GREEN.darker());
+
             JLabel coinRowSleeveQTYLabel = new JLabel(" -- ");
+            coinRowSleeveQTYLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+
             JLabel coinRowRemainderQTYLabel = new JLabel(" --");
+            coinRowRemainderQTYLabel.setFont(new Font("Arial", Font.PLAIN, 18));
 
-            coinNameLabel.setName(coin.getName());
-            coinTextField.setName(coin.getName());
-            coinRowValueLabel.setName(coin.getName());
-            coinRowValueLabel.setForeground(Color.GREEN.darker()); // Differentiate value per row
-            coinRowSleeveQTYLabel.setName(coin.getName());
-            coinRowRemainderQTYLabel.setName(coin.getName());
-
-            gbc.gridx = 0; // first column
+            gbc.gridx = 0;
             gbc.gridy = row;
             coinPanel.add(coinNameLabel, gbc);
 
-            gbc.gridx = 1; // second column
+            gbc.gridx = 1;
             coinPanel.add(coinTextField, gbc);
             coinTextFields.add(coinTextField);
 
-            gbc.gridx = 2; // third column
+            gbc.gridx = 2;
             coinPanel.add(coinRowValueLabel, gbc);
             coinRowValues.add(coinRowValueLabel);
 
-            gbc.gridx = 3; // fourth column
+            gbc.gridx = 3;
             coinPanel.add(coinRowSleeveQTYLabel, gbc);
             coinRowSleeves.add(coinRowSleeveQTYLabel);
 
-            gbc.gridx = 4; // fifth column
+            gbc.gridx = 4;
             coinPanel.add(coinRowRemainderQTYLabel, gbc);
             coinRowRemainders.add(coinRowRemainderQTYLabel);
+
             row++;
         }
 
         JLabel coinTotalQuantityTitleLabel = new JLabel("Grand Totals:");
+        coinTotalQuantityTitleLabel.setFont(new Font("Arial", Font.BOLD, 20));
         gbc.gridx = 0;
         gbc.gridy = row;
         coinPanel.add(coinTotalQuantityTitleLabel, gbc);
 
         JLabel coinTotalQuantity = new JLabel(" -- ");
+        coinTotalQuantity.setFont(new Font("Arial", Font.PLAIN, 18));
         gbc.gridx = 1;
         coinPanel.add(coinTotalQuantity, gbc);
 
         coins_TotalValueLabel = new JLabel(" -- ");
+        coins_TotalValueLabel.setFont(new Font("Arial", Font.BOLD, 24));
         gbc.gridx = 2;
         coinPanel.add(coins_TotalValueLabel, gbc);
 
         GrandSleeveValue = new JLabel(" -- ");
+        GrandSleeveValue.setFont(new Font("Arial", Font.PLAIN, 18));
         gbc.gridx = 3;
         coinPanel.add(GrandSleeveValue, gbc);
 
         GrandRemainderValue = new JLabel(" -- ");
+        GrandRemainderValue.setFont(new Font("Arial", Font.PLAIN, 18));
         gbc.gridx = 4;
         coinPanel.add(GrandRemainderValue, gbc);
 
-        JButton calculateButton = getCalculateButton(CoinList, coinTotalQuantity); // Add calculate button
+        JButton calculateButton = getCalculateButton(CoinList, coinTotalQuantity);
 
         row++;
         gbc.gridx = 0;
@@ -119,24 +121,25 @@ public class CoinCounter {
     }
 
     private JButton getCalculateButton(ArrayList<Coin> CoinList, JLabel coinTotalQuantity) {
-        JButton calculateButton = new JButton("Calculate"); // Create calculate button
-        calculateButton.addActionListener(e -> { // Upon each press of the button:
-            grandTotal = 0;      // Reset variables
-            grandQuantity = 0;   //
-            grandRolledValue= 0; //
-            grandRemainder = 0;  //
-            for (int i = 0; i < CoinList.size(); i++) { // Row values
-                try { // Calculate values
+        JButton calculateButton = new JButton("Calculate");
+        calculateButton.setFont(new Font("Arial", Font.BOLD, 20));
+        calculateButton.addActionListener(e -> {
+            grandTotal = 0;
+            grandQuantity = 0;
+            grandRolledValue = 0;
+            grandRemainder = 0;
+            for (int i = 0; i < CoinList.size(); i++) {
+                try {
                     int coinQuantity = Integer.parseInt(coinTextFields.get(i).getText());
                     float value = CoinList.get(i).getValue() * coinQuantity;
                     int sleeves = coinQuantity / CoinList.get(i).getRollLimit();
                     int remainderFromSleeves = coinQuantity % CoinList.get(i).getRollLimit();
                     coinRowValues.get(i).setText(String.format("%.2f", value));
 
-                    if (sleeves >= 1) { // If there are enough coins for this coin for a full roll:
+                    if (sleeves >= 1) {
                         float rowRolledValue = CoinList.get(i).getRollValue(sleeves);
                         coinRowSleeves.get(i).setText(sleeves + " [$" + rowRolledValue + "]");
-                        grandRolledValue += rowRolledValue; // Update value for rolled monies
+                        grandRolledValue += rowRolledValue;
                     } else {
                         coinRowSleeves.get(i).setText(String.valueOf(sleeves));
                     }
@@ -144,24 +147,31 @@ public class CoinCounter {
                     coinRowRemainders.get(i).setText(String.valueOf(remainderFromSleeves));
                     grandQuantity += coinQuantity;
                     grandTotal += value;
-                } catch (NumberFormatException ex) { // replace with 0
+                } catch (NumberFormatException ex) {
                     coinRowValues.get(i).setText("0");
                 }
             }
-            coinTotalQuantity.setText(String.valueOf(grandQuantity)); // Grand column values
+            coinTotalQuantity.setText(String.valueOf(grandQuantity));
             coins_TotalValueLabel.setText(" $" + String.format("%.2f", grandTotal));
             coins_TotalValueLabel.setForeground(Color.GREEN.darker());
             GrandSleeveValue.setText("  [$" + String.format("%.2f", grandRolledValue) + "]");
             GrandRemainderValue.setText("$" + String.format("%.2f", grandRemainder));
-
         });
         return calculateButton;
     }
 
     public static void main(String[] args) {
+        ArrayList<Coin> DollarCoins = new ArrayList<>();
+        Coin Quarter = new Coin("Quarter", 0.25F, 40, DollarCoins);
+        Coin Dime = new Coin("Dime", 0.10F, 50, DollarCoins);
+        Coin Nickel = new Coin("Nickel", 0.05F, 40, DollarCoins);
+        Coin Penny = new Coin("Penny", 0.01F, 50, DollarCoins);
+        Penny.updatePlural("Pennies"); // Example of updating plural form for Penny
+
         SwingUtilities.invokeLater(() -> {
-            CoinCounter coinCounter = new CoinCounter();
+            CoinCounter coinCounter = new CoinCounter(DollarCoins);
             coinCounter.mainWindow.setVisible(true);
         });
     }
+
 }
